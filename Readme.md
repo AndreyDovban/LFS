@@ -130,3 +130,45 @@ EOF
 ```bash
 source ~/.bash_profile
 ```
+
+## 2. Скачивание архивов пакетов
+
+Перейти под пользователем lfs
+
+```bash
+su - lfs
+cd $LFS/sources
+```
+
+Получение спиков пакетов
+
+```bash
+wget https://www.linuxfromscratch.org/lfs/view/stable/wget-list-sysv
+```
+
+Получение файда проверки целостности пакетов
+
+```bash
+wget https://www.linuxfromscratch.org/lfs/view/stable/md5sums
+```
+
+Скачивание ресурсов, выполнить на хост машине и потом переложить в виртуалку, т.к. могут быть проблемы из за NAT
+
+```bash
+wget --input-file=wget-list-sysv --continue --directory-prefix=$LFS/sources
+# wget -4 -i wget-list-sysv -c -T 10 -t 5 --no-check-certificate
+```
+
+Проверка целостности
+
+```bash
+pushd $LFS/sources
+  md5sum -c md5sums
+popd
+```
+
+Перед распаковкой передать права пользователю root
+
+```bash
+chown root:root $LFS/sources/*
+```

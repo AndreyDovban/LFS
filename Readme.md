@@ -64,6 +64,12 @@ sudo mkdir -pv $LFS
 sudo mount -v -t ext4 /dev/vdb1 $LFS
 ```
 
+Проверить успешное примонтирование
+
+```bash
+df -h
+```
+
 Создание структуры папок
 
 ```bash

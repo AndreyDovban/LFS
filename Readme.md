@@ -143,7 +143,8 @@ LFS_TGT=$(uname -m)-lfs-linux-gnu
 PATH=/usr/bin
 if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 PATH=$LFS/tools/bin:$PATH
-export LFS LC_ALL LFS_TGT PATH
+CONFIG_SITE=$LFS/usr/share/config.site
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 EOF
 ```
 
@@ -195,7 +196,9 @@ popd
 chown root:root $LFS/sources/*
 ```
 
-## 3. Создание ограниченной структуры каталогов в файловой системе LFS
+## 3. Подготовка среды выполнения
+
+### 3.1 Создание ограниченной структуры каталогов в файловой системе LFS
 
 > Следующие команды выполнять из под root
 
@@ -228,4 +231,24 @@ chown -v lfs $LFS/{usr{,/*},var,etc,tools}
 case $(uname -m) in
   x86_64) chown -v lfs $LFS/lib64 ;;
 esac
+```
+
+### 3.2 Настройка среды ваполнения
+
+> Переход под пользователя lfs
+
+```bash
+su - lfs
+```
+
+Разрешить make запускать до 32 заданий сборки
+
+```bash
+cat >> ~/.bashrc << "EOF"
+export MAKEFLAGS=-j$(nproc)
+EOF
+```
+
+```bash
+source ~/.bash_profile
 ```

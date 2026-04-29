@@ -194,3 +194,38 @@ popd
 ```bash
 chown root:root $LFS/sources/*
 ```
+
+## 3. Создание ограниченной структуры каталогов в файловой системе LFS
+
+> Следующие команды выполнять из под root
+
+Создание структуры каталогов
+
+```bash
+mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
+```
+
+Создние симлинков (LFS следует современному стандарту Usr-merge, где /bin, /lib и /sbin — это ссылки на их аналоги в /usr)
+
+```bash
+for i in bin lib sbin; do
+  ln -sv usr/$i $LFS/$i
+done
+```
+
+Для 64-битной системы (создаем lib64, хотя в примечании и сказано, что мы его не будем активно использовать, по инструкции он нужен на этом этапе)
+
+```bash
+case $(uname -m) in
+  x86_64) mkdir -pv $LFS/lib64 ;;
+esac
+```
+
+Предоставить lfs полный доступ ко всем каталогам в каталоге $LFS, сделав lfs владельцем
+
+```bash
+chown -v lfs $LFS/{usr{,/*},var,etc,tools}
+case $(uname -m) in
+  x86_64) chown -v lfs $LFS/lib64 ;;
+esac
+```

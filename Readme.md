@@ -63,7 +63,7 @@ sudo mkdir -pv $LFS
 Узнать UUID раздела для монтирования
 
 ```bash
-sudo blkid /dev/sdb1
+sudo blkid /dev/vdb1
 ```
 
 или

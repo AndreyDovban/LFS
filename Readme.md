@@ -242,3 +242,49 @@ EOF
 ```bash
 source ~/.bash_profile
 ```
+
+### 4 Компиляция кросс-инструментария
+
+> Убедитесь, что вы являетесь пользователем lfs при извлечении пакета
+
+## 4.1 Сборка Binutils
+
+Распаковать пакет
+
+```bash
+tar -xf binutils-2.45.tar.xz
+cd binutils-2.45
+```
+
+Создать директорию
+
+```bash
+mkdir -v build
+cd       build
+```
+
+Подготовка Binutils к компиляции
+
+```bash
+../configure --prefix=$LFS/tools \
+             --with-sysroot=$LFS \
+             --target=$LFS_TGT   \
+             --disable-nls       \
+             --enable-gprofng=no \
+             --disable-werror    \
+             --enable-new-dtags  \
+             --enable-default-hash-style=gnu
+```
+
+Компиляция и установка пакета, с измерением времени выполнения
+
+```bash
+time { make && make install; }
+```
+
+Удалить директорию сборки пакета
+
+```bash
+cd $LFS/sources
+rm -rf binutils-2.45
+```

@@ -293,7 +293,7 @@ rm -rf binutils-2.45
 
 ## 4.2 Сборка GCC
 
-> The GCC package contains the GNU compiler collection, which includes the C and C++ compilers.
+> Пакет GCC содержит набор компиляторов GNU, включающий компиляторы C и C++.
 
 Распаковка пакета
 

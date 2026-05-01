@@ -117,43 +117,6 @@ sudo chown -v lfs $LFS/tools
 sudo chown -v lfs $LFS/sources
 ```
 
-### 1.5 Настройка окружения пользователя lfs
-
-```bash
-su - lfs
-```
-
-Добваить в .bash_profile
-
-```bash
-cat > ~/.bash_profile << "EOF"
-exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
-EOF
-```
-
-Добавить в .bashrc
-
-```bash
-cat > ~/.bashrc << "EOF"
-set +h
-umask 022
-LFS=/mnt/lfs
-LC_ALL=POSIX
-LFS_TGT=$(uname -m)-lfs-linux-gnu
-PATH=/usr/bin
-if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
-PATH=$LFS/tools/bin:$PATH
-CONFIG_SITE=$LFS/usr/share/config.site
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-EOF
-```
-
-Применение настроек
-
-```bash
-source ~/.bash_profile
-```
-
 ## 2. Скачивание архивов пакетов
 
 Перейти под пользователем lfs
@@ -241,6 +204,31 @@ esac
 su - lfs
 ```
 
+Добваить в .bash_profile
+
+```bash
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+EOF
+```
+
+Добавить в .bashrc
+
+```bash
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+LFS=/mnt/lfs
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+PATH=/usr/bin
+if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+PATH=$LFS/tools/bin:$PATH
+CONFIG_SITE=$LFS/usr/share/config.site
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+EOF
+```
+
 Разрешить make запускать до 32 заданий сборки
 
 ```bash
@@ -248,6 +236,8 @@ cat >> ~/.bashrc << "EOF"
 export MAKEFLAGS=-j$(nproc)
 EOF
 ```
+
+Применение настроек
 
 ```bash
 source ~/.bash_profile

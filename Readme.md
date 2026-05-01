@@ -249,6 +249,8 @@ source ~/.bash_profile
 
 ## 4.1 Сборка Binutils
 
+> Пакет Binutils содержит компоновщик, ассемблер и другие инструменты для работы с объектными файлами
+
 Распаковать пакет
 
 ```bash
@@ -256,7 +258,7 @@ tar -xf binutils-2.45.tar.xz
 cd binutils-2.45
 ```
 
-Создать директорию
+Создать директорию сборки
 
 ```bash
 mkdir -v build
@@ -287,4 +289,90 @@ time { make && make install; }
 ```bash
 cd $LFS/sources
 rm -rf binutils-2.45
+```
+
+## 4.2 Сборка GCC
+
+> The GCC package contains the GNU compiler collection, which includes the C and C++ compilers.
+
+Распаковка пакета
+
+```bash
+tar -xf gcc-15.2.0.tar.xz
+cd gcc-15.2.0
+```
+
+Распаковка зависимостей
+
+```bash
+tar -xf ../mpfr-4.2.2.tar.xz
+mv -v mpfr-4.2.2 mpfr
+tar -xf ../gmp-6.3.0.tar.xz
+mv -v gmp-6.3.0 gmp
+tar -xf ../mpc-1.3.1.tar.gz
+mv -v mpc-1.3.1 mpc
+```
+
+На хостах x86_64 установите имя каталога по умолчанию для 64-битных библиотек на « lib »
+
+```bash
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+ ;;
+esac
+```
+
+Создать директорию сборки
+
+```bash
+mkdir -v build
+cd       build
+```
+
+Подготовка GCC к компиляции
+
+```bash
+../configure                  \
+    --target=$LFS_TGT         \
+    --prefix=$LFS/tools       \
+    --with-glibc-version=2.42 \
+    --with-sysroot=$LFS       \
+    --with-newlib             \
+    --without-headers         \
+    --enable-default-pie      \
+    --enable-default-ssp      \
+    --disable-nls             \
+    --disable-shared          \
+    --disable-multilib        \
+    --disable-threads         \
+    --disable-libatomic       \
+    --disable-libgomp         \
+    --disable-libquadmath     \
+    --disable-libssp          \
+    --disable-libvtv          \
+    --disable-libstdcxx       \
+    --enable-languages=c,c++
+```
+
+Компиляция и установка пакета, с измерением времени выполнения
+
+```bash
+time { make && make install; }
+```
+
+Исправление зпголовков
+
+```bash
+cd ..
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+  `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include/limits.h
+```
+
+Удалить директорию сборки пакета
+
+```bash
+cd $LFS/sources
+rm -rf gcc-15.2.0
 ```
